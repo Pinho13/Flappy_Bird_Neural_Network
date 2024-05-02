@@ -15,13 +15,11 @@ class Bird(pygame.sprite.Sprite):
         self.image = pygame.Surface(self.size)
         self.image.fill((220 + random.randint(-30, 30),220 + random.randint(-30, 30), random.randint(0, 5)))
         self.rect = self.image.get_rect(center=self.pos)
-        self.score = 0
-
         self.Input1 = 0
         self.Input2 = 0
-        self.Weight1 = random.uniform(-1, 1)
-        self.Weight2 = random.uniform(-1, 1)
-        self.Bias = random.uniform(-1, 1)
+        self.Weight1 = random.uniform(-0.5, 0.5)
+        self.Weight2 = random.uniform(-0.5, 0.5)
+        self.Bias = random.uniform(-0.5, 0.5)
         self.Output = 0
 
     def update(self):
@@ -42,15 +40,18 @@ class Bird(pygame.sprite.Sprite):
     def death(self):
         if len(self.game.bird.sprites()) <= 1:
             self.game.clean_obstacles()
+            change_weight1 = random.uniform(-0.1, 0.1)
+            change_weight2 = random.uniform(-0.1, 0.1)
+            change_bias = random.uniform(-0.1, 0.1)
             bird1 = Bird(self.game,Vector2(WIDTH/2, HEIGHT/2))
-            bird1.Weight1 = self.Weight1 + random.uniform(0.005, 0.05)
-            bird1.Weight2 = self.Weight2 + random.uniform(0.005, 0.05)
-            bird1.bias = self.Bias + random.uniform(0.005, 0.05)
+            bird1.Weight1 = self.Weight1 + change_weight1
+            bird1.Weight2 = self.Weight2 + change_weight2
+            bird1.bias = self.Bias + change_bias
 
             bird2 = Bird(self.game,Vector2(WIDTH/2, HEIGHT/2))
-            bird2.Weight1 = self.Weight1 - random.uniform(0.005, 0.05)
-            bird2.Weight2 = self.Weight2 - random.uniform(0.005, 0.05)
-            bird2.bias = self.Bias - random.uniform(0.005, 0.05)
+            bird2.Weight1 = (self.Weight1 - change_weight1)
+            bird2.Weight2 = self.Weight2 - change_weight2
+            bird2.bias = self.Bias - change_bias
 
             bird3 = Bird(self.game, Vector2(WIDTH / 2, HEIGHT / 2))
             bird3.Weight1 = self.Weight1

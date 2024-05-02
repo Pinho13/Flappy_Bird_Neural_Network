@@ -1,3 +1,5 @@
+import math
+
 import pygame
 import sys
 
@@ -7,6 +9,20 @@ from bird import *
 from Obstacles import *
 
 
+class Text(pygame.sprite.Sprite):
+    def __init__(self, pos, size, text):
+        super().__init__()
+
+        self.pos = pos
+        self.text = text
+        self.text_font = pygame.font.SysFont(None, int(size))# noqa
+        self.image = self.text_font.render(text , True, (0, 0, 0))
+        self.rect = self.image.get_rect(center=pos)
+
+    def update(self):
+        self.image = self.text_font.render(self.text, True, (0, 0, 0))
+
+
 class Game:
     def __init__(self):
         pygame.init()
@@ -14,15 +30,24 @@ class Game:
         self.delta_time = 0
         self.bird = pygame.sprite.Group()
         self.obstacles = pygame.sprite.Group()
+        self.texts = pygame.sprite.Group()
         self.pillars = []
         self.has_started = False
         self.clock = pygame.time.Clock()
         self.time_counter = 0
         self.last_spawn = 0
         self.current_pillar = 0
+        self.gen = 0
+        self.score = 0
         self.initializer()
 
     def initializer(self):
+        self.score_text = Text(SCORE_POS, 25, "0")
+        self.time_text = Text(TIME_POS, 25, "0")
+        self.gen_text = Text(GEN_POS, 25, "Gen - 0")
+        self.texts.add(self.score_text)
+        self.texts.add(self.time_text)
+        self.texts.add(self.gen_text)
         self.spawn_birds()
 
     def check_events(self):
@@ -39,12 +64,16 @@ class Game:
 
     def update(self):
         self.delta_time = self.clock.tick(FPS) / 1000
-        self.time_counter += self.delta_time
+        h = math.floor(self.time_counter/(60*60))
+        m = math.floor(self.time_counter/60) - h * 60
+        s = math.floor(self.time_counter) - m * 60 - h * 60 * 60
+        self.time_text.text = str(h) + "h " + str(m) + "m " + str(s) + "s"
         pygame.display.set_caption('Flappy Bird - ' + str(round(self.clock.get_fps())))
         self.screen.fill(BACKGROUND_COLOR)
         self.bird.draw(self.screen)
         self.obstacles.draw(self.screen)
         if self.has_started:
+            self.time_counter += self.delta_time
             self.bird.update()
             self.obstacles.update()
             self.spawn_pillars()
@@ -58,6 +87,8 @@ class Game:
             if pygame.sprite.spritecollideany(bird, self.obstacles):
                 if isinstance(bird, Bird):
                     bird.death()
+        self.texts.draw(self.screen)
+        self.texts.update()
         #self.debug()
         pygame.display.update()
 
@@ -67,6 +98,8 @@ class Game:
             self.last_spawn = self.time_counter
 
     def spawn_birds(self):
+        self.gen += 1
+        self.gen_text.text = "Gen " + str(self.gen)
         if NEURAL_NETWORK:
             for i in range(NUMBER_OF_BIRDS - len(self.bird.sprites())):
                 self.bird.add(Bird(self,Vector2(WIDTH/2, HEIGHT/2))) # noqa
@@ -76,6 +109,7 @@ class Game:
 
     def clean_obstacles(self):
         self.current_pillar = 0
+        self.score = 0
         self.obstacles.empty()
         self.pillars.clear()
 

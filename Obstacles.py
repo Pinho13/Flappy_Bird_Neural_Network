@@ -28,8 +28,8 @@ class Pillars(pygame.sprite.Sprite):
         if self.pos.x < (WIDTH/2)-30 and not self.point_added:
             self.point_added = True
             self.game.current_pillar += 1
-            for bird in self.game.bird:
-                bird.score += 1
+            self.game.score += 1
+            self.game.score_text.text = str(self.game.score)
 
 
 class Pillar(pygame.sprite.Sprite):
