@@ -1,4 +1,5 @@
 import random
+import pygame
 
 from pygame import Vector2
 
@@ -17,7 +18,7 @@ PILLAR_GAP = 55
 
 TIME_BETWEEN_SPAWNS = 2.5
 
-NUMBER_OF_BIRDS = 10
+NUMBER_OF_BIRDS = 10000
 
 NEURAL_NETWORK = True
 
@@ -25,3 +26,5 @@ NEURAL_NETWORK = True
 SCORE_POS = Vector2(WIDTH/2, 25)
 TIME_POS = Vector2(WIDTH-125, 25)
 GEN_POS = Vector2(50, 25)
+
+TEXTURES = [pygame.image.load("Sprite-0001.png"), pygame.image.load("Sprite-0002.png"), pygame.image.load("Sprite-0003.png"), pygame.image.load("Sprite-0004.png")]

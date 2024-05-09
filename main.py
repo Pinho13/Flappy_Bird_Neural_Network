@@ -70,7 +70,7 @@ class Game:
         self.time_text.text = str(h) + "h " + str(m) + "m " + str(s) + "s"
         pygame.display.set_caption('Flappy Bird - ' + str(round(self.clock.get_fps())))
         self.screen.fill(BACKGROUND_COLOR)
-        self.bird.draw(self.screen)
+        #self.bird.draw(self.screen)
         self.obstacles.draw(self.screen)
         if self.has_started:
             self.time_counter += self.delta_time

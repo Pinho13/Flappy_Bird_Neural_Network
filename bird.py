@@ -12,6 +12,8 @@ class Bird(pygame.sprite.Sprite):
         self.pos = pos
         self.velY = 0
         self.size = BIRD_SIZE
+        self.tex = TEXTURES[random.randint(0, len(TEXTURES) - 1)].convert_alpha()
+        self.tex = pygame.transform.scale(self.tex, (BIRD_SIZE.x * 1.25, BIRD_SIZE.y * 1.25))
         self.image = pygame.Surface(self.size)
         self.image.fill((220 + random.randint(-30, 30),220 + random.randint(-30, 30), random.randint(0, 5)))
         self.rect = self.image.get_rect(center=self.pos)
@@ -26,9 +28,13 @@ class Bird(pygame.sprite.Sprite):
         if NEURAL_NETWORK:
             self.Neural_Network()
         self.physics()
+        self.blit()
         self.rect.center = self.pos
         if self.pos.y < 0 or self.pos.y > HEIGHT:
             self.death()
+
+    def blit(self):
+        self.game.screen.blit(self.tex, self.rect)
 
     def physics(self):
         self.velY = pygame.math.lerp(self.velY, 7.5, 0.05)
